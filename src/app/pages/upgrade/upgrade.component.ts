@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
     templateUrl: 'upgrade.component.html'
 })
 
-export class UpgradeComponent implements OnInit{
-    ngOnInit(){
+export class UpgradeComponent implements OnInit {
+    ngOnInit() {
     }
 }

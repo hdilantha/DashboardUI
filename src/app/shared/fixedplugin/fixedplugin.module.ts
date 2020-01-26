@@ -5,9 +5,9 @@ import { FixedPluginComponent } from './fixedplugin.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
-    imports: [ RouterModule, CommonModule, NgbModule ],
-    declarations: [ FixedPluginComponent ],
-    exports: [ FixedPluginComponent ]
+    imports: [RouterModule, CommonModule, NgbModule],
+    declarations: [FixedPluginComponent],
+    exports: [FixedPluginComponent]
 })
 
-export class FixedPluginModule {}
+export class FixedPluginModule { }
