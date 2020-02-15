@@ -1,6 +1,188 @@
 import { Component, OnInit } from '@angular/core';
+// import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import * as L from 'leaflet';
 
 declare var google: any;
+
+const weatherData: L.GeoJSON.FeatureCollection<any> = {
+    type: 'FeatureCollection',
+    features: [
+        {
+            type: 'Feature',
+            geometry: {
+                type: 'Point',
+                coordinates: [79.8612, 6.9271]
+            },
+            properties: {
+                weatherMag: 14.5,
+                trafficMag: 10.8
+            }
+        },
+        {
+            type: 'Feature',
+            geometry: {
+                type: 'Point',
+                coordinates: [79.8600, 6.9201]
+            },
+            properties: {
+                weatherMag: 10.5,
+                trafficMag: 10.7
+            }
+        },
+        {
+            type: 'Feature',
+            geometry: {
+                type: 'Point',
+                coordinates: [79.8812, 6.9261]
+            },
+            properties: {
+                weatherMag: 12.5,
+                trafficMag: 12
+            }
+        },
+        {
+            type: 'Feature',
+            geometry: {
+                type: 'Point',
+                coordinates: [79.9642, 6.9251]
+            },
+            properties: {
+                weatherMag: 12.2,
+                trafficMag: 11.0
+            }
+        },
+        {
+            type: 'Feature',
+            geometry: {
+                type: 'Point',
+                coordinates: [79.8602, 6.9278]
+            },
+            properties: {
+                weatherMag: 12.7,
+                trafficMag: 11.4
+            }
+        },
+        {
+            type: 'Feature',
+            geometry: {
+                type: 'Point',
+                coordinates: [79.8832, 6.9280]
+            },
+            properties: {
+                weatherMag: 12.1,
+                trafficMag: 12.4
+            }
+        },
+        {
+            type: 'Feature',
+            geometry: {
+                type: 'Point',
+                coordinates: [79.8618, 6.9261]
+            },
+            properties: {
+                weatherMag: 12.2,
+                trafficMag: 11.3
+            }
+        },
+        {
+            type: 'Feature',
+            geometry: {
+                type: 'Point',
+                coordinates: [79.8512, 6.9256]
+            },
+            properties: {
+                weatherMag: 11.8,
+                trafficMag: 12.3
+            }
+        },
+    ]
+};
+
+// const trafficData: L.GeoJSON.FeatureCollection<any> = {
+//     type: 'FeatureCollection',
+//     features: [
+//         {
+//             type: 'Feature',
+//             geometry: {
+//                 type: 'Point',
+//                 coordinates: [9.8612, 6.9271]
+//             },
+//             properties: {
+//                 mag: 12.5,
+//             }
+//         },
+//         {
+//             type: 'Feature',
+//             geometry: {
+//                 type: 'Point',
+//                 coordinates: [9.8600, 6.9201]
+//             },
+//             properties: {
+//                 mag: 12.5,
+//             }
+//         },
+//         {
+//             type: 'Feature',
+//             geometry: {
+//                 type: 'Point',
+//                 coordinates: [9.8812, 6.9261]
+//             },
+//             properties: {
+//                 mag: 12.5,
+//             }
+//         },
+//         {
+//             type: 'Feature',
+//             geometry: {
+//                 type: 'Point',
+//                 coordinates: [9.9642, 6.9251]
+//             },
+//             properties: {
+//                 mag: 12.5,
+//             }
+//         },
+//         {
+//             type: 'Feature',
+//             geometry: {
+//                 type: 'Point',
+//                 coordinates: [9.8602, 6.9278]
+//             },
+//             properties: {
+//                 mag: 12,
+//             }
+//         },
+//         {
+//             type: 'Feature',
+//             geometry: {
+//                 type: 'Point',
+//                 coordinates: [9.8832, 6.9280]
+//             },
+//             properties: {
+//                 mag: 12.5,
+//             }
+//         },
+//         {
+//             type: 'Feature',
+//             geometry: {
+//                 type: 'Point',
+//                 coordinates: [9.8618, 6.9261]
+//             },
+//             properties: {
+//                 mag: 12.5,
+//             }
+//         },
+//         {
+//             type: 'Feature',
+//             geometry: {
+//                 type: 'Point',
+//                 coordinates: [9.8512, 6.9256]
+//             },
+//             properties: {
+//                 mag: 12.5,
+//             }
+//         },
+//     ]
+// };
 
 @Component({
     moduleId: module.id,
@@ -21,12 +203,59 @@ export class MapsComponent implements OnInit {
         }
         const map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
-        const marker = new google.maps.Marker({
-            position: myLatlng,
-            title: 'Hello World!'
+        const weatherMapData = [];
+        const trafficMapData = [];
+        for (let i = 0; i < weatherData.features.length; i++) {
+            const coords = weatherData.features[i].geometry.coordinates;
+            const latLng = new google.maps.LatLng(coords[1], coords[0]);
+            const weatherMagnitude = weatherData.features[i].properties.weatherMag;
+            const trafficMagnitude = weatherData.features[i].properties.trafficMag;
+            weatherMapData.push({
+                location: latLng,
+                weight: Math.pow(2, weatherMagnitude)
+            });
+            trafficMapData.push({
+                location: latLng,
+                weight: Math.pow(2, trafficMagnitude)
+            });
+            // const marker = new google.maps.Marker({
+            //   position: latLng,
+            // });
+            // marker.setMap(map);
+            // map.data.setStyle(feature => {
+            //     const magnitude = feature.
+            //     return {
+            //       icon: this.getCircle(magnitude)
+            //     };
+            //   });
+        }
+
+        const weatherMapGradient = [
+            'rgba(0, 0, 0, 0)',
+            'rgba(255, 255, 0, 3)',
+            'rgba(255, 100, 0, 2)',
+            'rgba(255, 0, 0, 1)'
+        ];
+        const weatherMap = new google.maps.visualization.HeatmapLayer({
+            data: weatherMapData,
+            dissipating: false,
+            map: map,
+            gradient: weatherMapGradient,
+            opacity: 0.6
         });
 
-        // To add the marker to the map, call setMap();
-        marker.setMap(map);
+        const trafficMapGradient = [
+            'rgba(0, 0, 0, 0)',
+            'rgba(0, 0, 255, 3)',
+            'rgba(100, 0, 255, 2)',
+            'rgba(255, 0, 255, 1)'
+        ];
+        const trafficMap = new google.maps.visualization.HeatmapLayer({
+            data: trafficMapData,
+            dissipating: false,
+            map: map,
+            gradient: trafficMapGradient,
+            opacity: 0.4
+        });
     }
 }
